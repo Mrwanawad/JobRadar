@@ -1,0 +1,141 @@
+{
+ "comments": "21/08/2026: Cursor pagination is now available and is the preferred way to page through the feed. Pass the nextCursor value from each response back as ?cursor=. It is faster than offset and will never return the same job twice. The offset parameter is deprecated and will be removed in a future release. 13/03/2026: The API has been updated to include the companySlug field in the response.",
+ "updatedAt": 1791981356,
+ "offset": 0,
+ "limit": 5,
+ "totalCount": 124652,
+ "nextCursor": "MjAyNi0xMC0xNFQxMjozMzowNi4wMzI5OTNafDI0MDExNDA",
+ "jobs": [
+  {
+   "title": "Project Manager (Heartland)",
+   "excerpt": "GuidePoint Security provides trusted cybersecurity expertise, solutions and services that help organizations make better decisions and minimize risk.",
+   "companyName": "GuidePoint Security LLC",
+   "companySlug": "guidepoint-security-llc",
+   "companyLogo": "https://cdn-images.himalayas.app/d4dtyoeavd4c9zerelckapbvyyac",
+   "employmentType": "Full Time",
+   "minSalary": null,
+   "maxSalary": null,
+   "salaryPeriod": "annual",
+   "seniority": [
+    "Manager"
+   ],
+   "currency": null,
+   "locationRestrictions": [
+    "United States"
+   ],
+   "timezoneRestrictions": [
+    -10,
+    -9,
+    -8,
+    -7,
+    -6,
+    -5,
+    14
+   ],
+   "categories": [
+    "Project-Manager",
+    "IT-Project-Manager",
+    "Professional-Services-Project-Manager",
+    "Cyber-Security-Project-Manager",
+    "Technical-Project-Manager",
+    "Regional-Project-Manager",
+    "Field-Project-Manager"
+   ],
+   "parentCategories": [
+    "Operations"
+   ],
+   "description": "<div class=\"content-intro\"><p>GuidePoint Security provides trusted cybersecurity expertise, solutions and services that help organizations make better decisions and minimize risk. By taking a three-tiered, holistic approach for evaluating security posture and ecosystems, GuidePoint enables some of the nation\u2019s top organizations, such as Fortune 500 companies and U.S. government agencies, to identify threats, optimize resources and integrate best-fit solutions that mitigate risk.</p></div><h3>General Description:</h3><p>As a GuidePoint Security Project Manager you are managing a unique portfolio of security focused Professional Services engagements which directly contribute to our client\u2019s goals and success. This is a remote/virtual position working for a home office with possible travel (up to 15%).  This position may also require serving as a client side billable resource for Project Management service delivery.<br><br><strong>Role and Responsibilities:</strong></p><ul>\n<li>Efficient and effective management of Professional Services projects through the full engagement lifecycle:<br><ul>\n<li>Sales handoff</li>\n<li>Resourcing</li>\n<li>Customer project plan development</li>\n<li>Execution management</li>\n<li>Project closeout activities</li>\n</ul>\n</li>\n<li>Ensure regular and timely communications to all key stakeholders</li>\n<li>Manage project issues and risks to resolution</li>\n<li>Maintain and foster internal and external customer relationships, ensuring objectives and statement of work deliverables are met</li>\n<li>Plan and manage resources ensuring all projects meet scope and budget expectations</li>\n<li>Maintain the OpenAir PSA application for project data</li>\n<li>Manage and support internal processes for revenue recognition and customer invoicing</li>\n<li>Create and maintain project management methodology and process documentation</li>\n<li>Provide Project Management services to GuidePoint customers in a professional service capacity</li>\n<li>Other duties as assigned</li>\n</ul><h3>Required Experience:</h3><ul>\n<li>Minimum of 3 years of experience in project management</li>\n<li>Minimum of 2 years of experience in a consulting services role or similar IT Project Management structure.</li>\n<li>Experience in interfacing with information security positions and stakeholders</li>\n<li>Experience with Agile methodology</li>\n<li>Bachelor\u2019s degree in a relevant discipline or equivalent experience</li>\n<li>Personal drive and passion for not only personal growth but also the growth of PMO and other GuidePoint Security teams</li>\n<li>Advanced project management skills, with demonstrated ability to evaluate project objectives and scope, gain customer understanding, schedule resources, and manage timeline and budget to plan</li>\n<li>Ability to manage multiple projects and/or teams simultaneously while maintaining customer satisfaction and financial health</li>\n<li>Understanding of a broad range of information security terms and disciplines</li>\n<li>Understanding of professional services revenue recognition and invoicing</li>\n<li>Demonstrated successful leadership of personnel and technical projects, including the ability to lead, mentor and develop team members</li>\n<li>Written communication skills for use in preparing formal deliverables</li>\n<li>Verbal communication skills that include the ability to communicate with anyone from a technical resource to the highest level of management</li>\n<li>Ability to analyze and solve problems, perform complex tasks and prioritize</li>\n<li>Ability to build customer relationships that enhance communications to ensure project success</li>\n<li>Demonstrated strong skills in persuasion and negotiation </li>\n<li>Advanced use of all Microsoft Office Suite and Microsoft Project, with advanced ability to utilize Microsoft Excel for project reporting</li>\n<li>Proficient in Jira, OpenAir and Salesforce, or other Professional Services applications</li>\n<li>Experience utilizing remote teleconferencing tools </li>\n<li>Evening and weekend hours may be required</li>\n<li>Ability to exemplify GuidePoint Security Core Values by having the following:<ul>\n<li>Desire to \u201cTake Ownership &amp; Complete Our Mission by being a part of the solution, hold themselves accountable, become the expert and take the initiative to get things done</li>\n<li>Ability to \u201cWow Them\u201d by making the customers\u2019 experience a memorable one that keeps them coming back for more</li>\n<li>Passion to \u201cAlways Challenge Themselves and Have Fun Doing It\u201d by pushing ourselves to take risks and exceed our own expectations.</li>\n<li>Desire to follow the \u201cNo Jerks\u201d Core Value by treating people with respect and dignity</li>\n</ul>\n</li>\n</ul><h3>Preferred Experience: </h3><ul>\n<li>Standard industry certifications</li>\n<li>Advanced computer skills with Mac and Google application experience</li>\n</ul><h3>Travel Requirements:</h3><ul><li>Travel up to 15%</li></ul><h3>Physical Requirements: </h3><ul>\n<li>Sedentary work</li>\n<li>Substantial movement of the wrists, hands, and/or fingers for a minimum of 8 hours a day</li>\n<li>Required to have close visual acuity to view computer terminal and/or extensive reading for a minimum of 8 hours a day</li>\n</ul><div class=\"content-conclusion\">\n<p><strong>We use Greenhouse Software as our applicant tracking system and Zoom Scheduler for HR screen request scheduling. At times, your email may block our communication with you. Please be sure to check your SPAM folder so that you don't miss updates on your application.</strong></p>\n<p></p>\n<h3>Why GuidePoint?</h3>GuidePoint Security is a rapidly growing, profitable, privately-held value added reseller that focuses exclusively on Information Security. Since its inception in 2011, GuidePoint has grown to over 1,300 employees, established strategic partnerships with leading security vendors, and serves as a trusted advisor to more than 6,200 customers.<p></p>\n<p>Firmly-defined core values drive all aspects of the business, which have been paramount to the company\u2019s success and establishment of an enjoyable workplace atmosphere. At GuidePoint, your colleagues are knowledgeable, skilled, and experienced and will seek to collaborate and provide mentorship and guidance at every opportunity.  </p>\n<p>This is a unique and rare opportunity to grow your career along with one of the fastest growing companies in the nation.<br><br><strong>Some added perks\u2026.</strong></p>\n<ul>\n<li>Remote workforce primarily (U.S. based only, some travel may be required for certain positions, working on-site may be required for Federal positions)</li>\n<li>Group Medical Insurance options: Zero Deductible PPO Plan (GuidePoint pays 90% of the premium for employees and 70% for family plans (spouse/children/family) or High Deductible Health Plan with HSA (GuidePoint pays 100% of the employees premiums and 75% for family plans (spouse/children/family). If you choose the High Deductible / HSA plan, GPS will contribute in 4 equal quarterly installments: ($850 per EE annually / $1750 per family annually (includes spouse/children/family options)</li>\n<li>Group Dental Insurance: GuidePoint pays 100% of the premium for employees and 75% of family plans</li>\n<li>12 corporate holidays and a Flexible Time Off (FTO) program</li>\n<li>Healthy mobile phone and home internet allowance</li>\n<li>Eligibility for retirement plan after 2 months at open enrollment</li>\n<li>Pet Benefit Option</li>\n</ul>\n</div><p>Originally posted on <a href=\"https://himalayas.app\">Himalayas</a></p>",
+   "pubDate": 1791981356,
+   "expiryDate": 1797165355,
+   "applicationLink": "https://himalayas.app/companies/guidepoint-security-llc/jobs/project-manager-heartland",
+   "guid": "https://himalayas.app/companies/guidepoint-security-llc/jobs/project-manager-heartland"
+  },
+  {
+   "title": "Account Executive",
+   "excerpt": "Career CategorySalesJob Description Job DescriptionPosition SummarySupport key hospital ecosystem development, operational sustainability, and access-related activities.",
+   "companyName": "Amgen",
+   "companySlug": "amgen",
+   "companyLogo": "https://cdn-images.himalayas.app/ygg1esm3yk1c2zkiz3q48u0exbfh",
+   "employmentType": "Full Time",
+   "minSalary": null,
+   "maxSalary": null,
+   "salaryPeriod": "annual",
+   "seniority": [
+    "Mid-level"
+   ],
+   "currency": null,
+   "locationRestrictions": [
+    "China"
+   ],
+   "timezoneRestrictions": [
+    6,
+    8
+   ],
+   "categories": [
+    "Account-Executive",
+    "Key-Account-Manager",
+    "Pharmaceutical-Sales-Representative",
+    "Healthcare-Sales-Executive",
+    "Market-Access-Manager",
+    "Customer-Account-Executive",
+    "Client-Account-Executive",
+    "Business-Account-Executive",
+    "Sales"
+   ],
+   "parentCategories": [
+    "Sales",
+    "Customer Service"
+   ],
+   "description": "<h3><b>Career Category</b></h3>Sales<h3><b>Job Description</b></h3><h3>\n<br>Job Description</h3><h3>Position Summary</h3><p>Support key hospital ecosystem development, operational sustainability, and access-related activities. Through scientific promotion, key account management, and project support, this role contributes to resolution of suspension and restriction issues, hospital and retail access, and patient accessibility.</p><br><h3>Key Responsibilities</h3><h3>1. Key Hospital Support &amp; Key Account Management</h3><p>Maintain relationships with key hospitals and key accounts, collect hospital needs and market insights, and support implementation of hospital projects.</p><p><b>2. Scientific Promotion &amp; Operational Sustainability Support</b></p><p>Conduct scientific promotion activities in compliance with company policies and support initiatives related to hospital access, reimbursement and pharmacy affairs. Follow up on suspension and restriction issues and hospital access challenges.</p><h3>3. Hospital &amp; Retail Access Support</h3><p>Support hospital and retail access projects, facilitate access processes, and maintain project documentation.</p><h3>4. Reimbursement &amp; Patient Access Support</h3><p>Collect reimbursement and market information, and support reimbursement-related initiatives and patient access programs.</p><p><b>5. Project Coordination &amp; Cross-functional Collaboration</b></p><p>Support regional projects and collaborate with Marketing, Medical, Commercial, Business and other relevant functions to ensure effective execution.</p><br><h3>Qualifications</h3><p></p><p><b>Education</b></p><ul>\n<li><b>Bachelor\u2019s degree or above; healthcare or life science background preferred.</b></li>\n<li><b>Exceptional candidates may be considered with a college diploma, subject to company approval.</b></li>\n</ul><h3><b>Experience</b></h3><ul>\n<li><b>Minimum 3 years of pharmaceutical industry experience.</b></li>\n<li><b>Experience in Market Access, business support, or related functions preferred; Key Account Management experience is an advantage.</b></li>\n<li><b>Extensive experience in compliant scientific promotion, with strong compliance awareness and the ability to conduct in-depth scientific discussions.</b></li>\n<li><b>Familiar with hospital customer management processes.</b></li>\n</ul><h3><b>Competencies</b></h3><ul>\n<li><b>Compliance awareness, key account management and scientific promotion capability.</b></li>\n<li><b>Communication and coordination skills.</b></li>\n<li><b>Execution capability.</b></li>\n<li><b>Teamwork and collaboration skills.</b></li>\n</ul><b><br><h3>\u5c97\u4f4d\u6982\u8ff0</h3></b><p>\u652f\u6301\u6838\u5fc3\u533b\u9662\u751f\u6001\u73af\u5883\u5efa\u8bbe\u3001\u5b89\u5168\u8fd0\u8425\u53ca\u51c6\u5165\u76f8\u5173\u5de5\u4f5c\u3002\u901a\u8fc7\u4e13\u4e1a\u63a8\u5e7f\u3001\u5ba2\u6237\u7ba1\u7406\u53ca\u9879\u76ee\u652f\u6301\uff0c\u534f\u52a9\u63a8\u52a8\u505c\u9650\u63a7\u95ee\u9898\u89e3\u51b3\u3001\u533b\u9662\u53ca\u836f\u5e97\u51c6\u5165\u4ee5\u53ca\u60a3\u8005\u53ef\u53ca\u6027\u63d0\u5347\u3002</p><br><h3><b>\u4e3b\u8981\u804c\u8d23</b></h3><p></p><p><b>1. \u6838\u5fc3\u533b\u9662\u652f\u6301\u4e0e\u5927\u5ba2\u6237\u7ba1\u7406</b></p><h3><b>\u7ef4\u62a4\u91cd\u70b9\u533b\u9662\u53ca\u5927\u5ba2\u6237\u5408\u4f5c\u5173\u7cfb\uff0c\u6536\u96c6\u533b\u9662\u9700\u6c42\u53ca\u5e02\u573a\u4fe1\u606f\uff0c\u652f\u6301\u91cd\u70b9\u533b\u9662\u5408\u4f5c\u9879\u76ee\u5f00\u5c55\u3002</b></h3><h3><b>2. \u4e13\u4e1a\u63a8\u5e7f\u4e0e\u5b89\u5168\u8fd0\u8425\u652f\u6301</b></h3><p><b>\u5728\u7b26\u5408\u516c\u53f8\u5408\u89c4\u8981\u6c42\u7684\u524d\u63d0\u4e0b\uff0c\u5f00\u5c55\u4e13\u4e1a\u63a8\u5e7f\u6d3b\u52a8\uff0c\u652f\u6301\u533b\u9662\u51c6\u5165\u3001\u533b\u4fdd\u53ca\u836f\u4e8b\u76f8\u5173\u5de5\u4f5c\uff0c\u8ddf\u8fdb\u505c\u9650\u63a7\u53ca\u9662\u5185\u9650\u5236\u95ee\u9898\u89e3\u51b3\u3002</b></p><h3><b>3. \u533b\u9662\u53ca\u836f\u5e97\u51c6\u5165\u652f\u6301</b></h3><h3><b>\u8ddf\u8fdb\u91cd\u70b9\u533b\u9662\u53ca\u836f\u5e97\u51c6\u5165\u9879\u76ee\uff0c\u652f\u6301\u4ea7\u54c1\u51c6\u5165\u76f8\u5173\u6d41\u7a0b\u63a8\u8fdb\uff0c\u7ef4\u62a4\u9879\u76ee\u76f8\u5173\u4fe1\u606f\u3002</b></h3><h3><b>4. \u533b\u4fdd\u4e0e\u60a3\u8005\u53ef\u53ca\u6027\u652f\u6301</b></h3><h3><b>\u6536\u96c6\u533b\u4fdd\u653f\u7b56\u53ca\u5e02\u573a\u73af\u5883\u4fe1\u606f\uff0c\u534f\u52a9\u63a8\u52a8\u533b\u4fdd\u62a5\u9500\u76f8\u5173\u5de5\u4f5c\u53ca\u60a3\u8005\u53ef\u53ca\u6027\u9879\u76ee\u3002</b></h3><h3><b>5. \u9879\u76ee\u534f\u8c03\u4e0e\u8de8\u56e2\u961f\u534f\u4f5c</b></h3><h3><b>\u652f\u6301\u533a\u57df\u91cd\u70b9\u9879\u76ee\u63a8\u8fdb\uff0c\u4e0e\u5e02\u573a\u3001\u533b\u5b66\u3001\u5546\u52a1\u53ca\u4e1a\u52a1\u56e2\u961f\u7b49\u534f\u540c\u5408\u4f5c\uff0c\u652f\u6301\u9879\u76ee\u987a\u5229\u843d\u5730\u3002</b></h3><b><br></b><h3><b>\u4efb\u804c\u8981\u6c42</b></h3><p></p><p><b>\u6559\u80b2\u80cc\u666f</b></p><ul>\n<li><b>\u672c\u79d1\u53ca\u4ee5\u4e0a\u5b66\u5386\uff0c\u533b\u836f\u76f8\u5173\u4e13\u4e1a\u4f18\u5148\uff1b</b></li>\n<li><b>\u7efc\u5408\u6761\u4ef6\u7279\u522b\u4f18\u79c0\u8005\u5b66\u5386\u53ef\u653e\u5bbd\u81f3\u5927\u4e13\uff08\u9700\u6309\u516c\u53f8\u89c4\u5b9a\u5b8c\u6210\u7279\u6279\u6d41\u7a0b\uff09\u3002</b></li>\n</ul><h3><b>\u5de5\u4f5c\u7ecf\u9a8c</b></h3><ul>\n<li><b>3\u5e74\u4ee5\u4e0a\u533b\u836f\u884c\u4e1a\u76f8\u5173\u5de5\u4f5c\u7ecf\u9a8c\uff1b</b></li>\n<li><b>\u5177\u6709\u51c6\u5165\u3001\u4e1a\u52a1\u652f\u6301\u6216\u76f8\u5173\u7ecf\u9a8c\u4f18\u5148\uff0c\u5177\u6709\u5927\u5ba2\u6237\u7ba1\u7406\u7ecf\u9a8c\u4f18\u5148\uff1b</b></li>\n<li><b>\u5177\u6709\u4e30\u5bcc\u7684\u4e13\u4e1a\u63a8\u5e7f\u7ecf\u9a8c\u548c\u4f18\u79c0\u7684\u5408\u89c4\u610f\u8bc6\uff0c\u80fd\u591f\u5f00\u5c55\u6df1\u5ea6\u5b66\u672f\u6c9f\u901a\uff1b</b></li>\n<li><b>\u719f\u6089\u533b\u9662\u5ba2\u6237\u7ba1\u7406\u6d41\u7a0b\u3002</b></li>\n</ul><h3><b>\u6838\u5fc3\u80fd\u529b</b></h3><ul>\n<li><b>\u5408\u89c4\u610f\u8bc6\u3001\u5ba2\u6237\u7ba1\u7406\u53ca\u4e13\u4e1a\u63a8\u5e7f\u80fd\u529b\uff1b</b></li>\n<li><b>\u6c9f\u901a\u534f\u8c03\u80fd\u529b\uff1b</b></li>\n<li><b>\u6267\u884c\u80fd\u529b\uff1b</b></li>\n<li><b>\u56e2\u961f\u5408\u4f5c\u7cbe\u795e\u3002</b></li>\n</ul><b>.</b><p>Originally posted on <a href=\"https://himalayas.app\">Himalayas</a></p>",
+   "pubDate": 1791981287,
+   "expiryDate": 1797165285,
+   "applicationLink": "https://himalayas.app/companies/amgen/jobs/account-executive-5943207961",
+   "guid": "https://himalayas.app/companies/amgen/jobs/account-executive-5943207961"
+  },
+  {
+   "title": "Senior Financial Analyst",
+   "excerpt": "Senior Financial Analyst needs 4-7 years of experience, including public accounting or SEC reporting environment Senior Financial Analyst requires:\u2022 Bachelors Degree in Accounting \u2022 Masters' Degree in Accounting highly preferred \u2022 Oracle and/pr ledger system, FCCS, Wdesk and xbrl experiece preferred \u2022 CPA designation required \u2022 4-7 years of experience, including public accounting or SEC reporting environment; \u2022 Good understanding of US GAAP and competency in preparing financial statement disclosures and performing financial analysis including advanced Microsoft office/Excel required; PeopleSoft and/or ledger system experience required, Hyperion, Wdesk, Kyriba and xbrl experience preferred.",
+   "companyName": "Global Channel Management, Inc.",
+   "companySlug": "global-channel-management-inc",
+   "companyLogo": "",
+   "employmentType": "Full Time",
+   "minSalary": 99000,
+   "maxSalary": 100000,
+   "salaryPeriod": "annual",
+   "seniority": [
+    "Senior"
+   ],
+   "currency": "USD",
+   "locationRestrictions": [
+    "United States"
+   ],
+   "timezoneRestrictions": [
+    -10,
+    -9,
+    -8,
+    -7,
+    -6,
+    -5,
+    14
+   ],
+   "categories": [
+    "Financial-Analyst",
+    "Financial-Reporting-Analyst",
+    "SEC-Reporting-Specialist",
+    "Senior-Finance-Analyst",
+    "Senior-Financial-Planning-And-Analysis-Analyst",
+    "Senior-FP&A-Analyst",
+    "Lead-Financial-Analyst",
+    "Senior-Financial-Analyst-\u2013-Revenue"
+   ],
+   "parentCategories": [
+    "Finance"
+   ],
+   "description": "<p>Senior Financial Analyst needs 4-7 years of experience, including public accounting or SEC reporting environment</p><h3>Senior Financial Analyst requires:</h3><ul>\n<li>Bachelors Degree in Accounting</li>\n<li>Masters' Degree in Accounting highly preferred</li>\n</ul><ul>\n<li>Oracle and/pr ledger system, FCCS, Wdesk and xbrl experiece preferred</li>\n<li>CPA designation required</li>\n<li>4-7 years of experience, including public accounting or SEC reporting environment;</li>\n<li>Good understanding of US GAAP and competency in preparing financial statement disclosures and performing financial analysis including advanced Microsoft office/Excel required; PeopleSoft and/or ledger system experience required, Hyperion, Wdesk, Kyriba and xbrl experience preferred.</li>\n<li>Able to assist other analysts in establishing, modifying, documenting, and implementing reporting methods and control procedures</li>\n<li>Able to assist other analysts, consultants and managers with advanced problem solving and complex analysis</li>\n<li>A self-starter, detail oriented, self-motivated, self-disciplined and performance driven team player; ability to work and perform tasks with little direction</li>\n<li>Excellent written and verbal communication skills</li>\n</ul><h3>Senior Financial Analyst duties:</h3><ul>\n<li>Review US GAAP disclosures included in Forms 10-Q/K for SEC registrant and its subsidiaries through the execution of companies policies, procedures, and controls</li>\n<li>Ability to perform 1st level review of US GAAP and statutory disclosures, including more complex disclosures, and help ensure adherence to reporting protocols by less experienced team members </li>\n<li>Interact, communicate and maintain liaison with other functional departments to ensure the quality, accuracy and completeness of the financial reporting disclosures included in SEC and non-SEC filings</li>\n<li>Ability to directly oversee the interactions between lower level team members (including offshore resources) and functional areas </li>\n<li>Develop and utilize various analytical reports and procedures to assist with the understanding and validation of certain US GAAP and statutory disclosures</li>\n<li>Provide guidance and direction to other analyst on usage of analytics to support the completeness and accuracy of our financial reports </li>\n<li>Manage and oversee the coordination of the calendar to ensure the timeliness and accurate delivery of financial information including analyzing and reporting of financial activities </li>\n<li>Interact with internal and external auditors as needed; help lead and support audit initiatives as required </li>\n<li>Recommend process improvements and participate in/lead problem solving sessions and provide functional advice to less experience analysts including offshore resources </li>\n<li>Assist in various projects as assigned including the process improvement initiatives related to financial reporting as well as the implementation of new or expanding the usage of certain existing financial reporting tools and other improvement initiatives; lead other analysts in the successful completion of various smaller projects and initiatives</li>\n</ul><p>Originally posted on <a href=\"https://himalayas.app\">Himalayas</a></p>",
+   "pubDate": 1791981285,
+   "expiryDate": 1797165284,
+   "applicationLink": "https://himalayas.app/companies/global-channel-management-inc/jobs/senior-financial-analyst",
+   "guid": "https://himalayas.app/companies/global-channel-management-inc/jobs/senior-financial-analyst"
+  }
+ ]
+}

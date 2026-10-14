@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.env
+cv/*.pdf
+cv/*.txt
+out/
+data/jobradar.db
+*.db
+desktop.ini
