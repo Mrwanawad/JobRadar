@@ -21,10 +21,12 @@ Fixtures live in `tests/fixtures/`, refreshed with `uv run python scripts/captur
 | DOL LCA file | `https://www.dol.gov/media/LCA_Disclosure_Data_FY2026_Q3.xlsx` | unverified | URL read from DOL page via WebFetch; script download may be blocked -> need manual download fallback |
 | Getro public API | `https://api.getro.com/` | 404 | no public endpoint; per-board scrape not planned |
 
-## Claude API (from official reference)
-- Model: `claude-haiku-5-5`, $0.10 in / $0.50 out per MTok (prompts <=100K).
-- Default effort `medium`; thinking adaptive/on by default; non-default sampling params 400. Set `output_config={"effort": "low"}` for scoring.
-- Cache: `cache_control={"type": "ephemeral"}` top-level or on the system block; check `usage.cache_read_input_tokens`. Minimum cacheable prefix is model-dependent; a short CV may fall under it.
+## LLM (free tiers, checked 2026-10-15)
+Client: `jobradar/llm.py`, OpenAI-compatible, providers tried in `LLM_PROVIDERS` order.
+- Primary: Gemini `gemini-3.8-flash` via `https://generativelanguage.googleapis.com/v1beta/openai`; `reasoning_effort` minimal/low/medium/high. Free limits per project, read them in AI Studio (no public table).
+- Alt: Groq `openai/gpt-oss-120b` (user reports it unavailable to them 2026-10-15; status page green). Free limits 30 RPM, 1K RPD, 8K TPM, 200K TPD. Params `reasoning_effort` (low/medium/high), `include_reasoning=false`; `reasoning_format` not supported.
+- Fallback: OpenRouter `nvidia/nemotron-3-ultra-550b-a55b:free` (`gpt-oss-120b:free` returned 404 "unavailable for free" on 2026-10-15). 20 RPM, 50 RPD (1K RPD once $10 credits bought).
+- Groq budget: 200K TPD / ~4K tokens per CV+job call = ~50 LLM-scored jobs per day. Keyword prefilter before the LLM.
 
 ## Still open
 - Search providers (Tavily/Exa/Brave) and email finders (Hunter/Snov/Prospeo): need API keys, none in env.
