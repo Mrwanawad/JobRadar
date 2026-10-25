@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JobRadar</title>
+<style>
+:root {
+  --bg: #eef0f3; --panel: #ffffff; --ink: #0b0d12; --muted: #475467; --line: #0b0d12; --soft: #d0d5dd;
+  --accent: #1d4ed8; --good: #067647; --warn: #b54708; --bad: #b42318; --chip: #f2f4f7;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0d12; --panel: #141821; --ink: #f2f4f7; --muted: #a3acbd; --line: #3a4252; --soft: #2a303c;
+    --accent: #7aa2ff; --good: #3ccf91; --warn: #f5a623; --bad: #ff6b5e; --chip: #1e2430;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 48px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 20px;
+  padding: 14px 18px; background: var(--panel); border: 2px solid var(--line); }
+h1 { font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -.02em; }
+h2 { font-size: 18px; font-weight: 800; margin: -16px -16px 14px; padding: 10px 16px;
+  border-bottom: 2px solid var(--line); text-transform: uppercase; letter-spacing: .04em; }
+.muted { color: var(--muted); }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.pill { background: var(--chip); border: 2px solid currentColor; padding: 4px 12px; font-size: 14px; font-weight: 700; }
+.pill.warn { color: var(--warn); } .pill.good { color: var(--good); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.card { background: var(--panel); border: 2px solid var(--line); padding: 16px; }
+.kpi { border-left: 8px solid var(--accent); }
+.kpi .v { font-size: 38px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi .l { color: var(--muted); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+.funnel { display: grid; gap: 10px; }
+.frow { display: grid; grid-template-columns: 130px 1fr 72px; align-items: center; gap: 10px; font-weight: 600; }
+.bar { height: 16px; background: var(--chip); border: 1px solid var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; border: 2px solid var(--line); }
+th { text-align: left; font-weight: 800; color: var(--ink); background: var(--chip); font-size: 13px;
+  text-transform: uppercase; letter-spacing: .04em; padding: 10px; border: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px; border: 1px solid var(--soft); vertical-align: top; }
+tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--chip) 60%, transparent); }
+tbody tr:hover td { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.tag { display: inline-block; padding: 2px 8px; font-size: 13px; font-weight: 800; text-transform: uppercase;
+  border: 2px solid currentColor; white-space: nowrap; }
+.tag.sent { color: var(--good); } .tag.skipped, .tag.failed { color: var(--bad); } .tag.draft { color: var(--warn); }
+.score { font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; }
+.section { margin-bottom: 16px; }
+.small { font-size: 14px; }
+.empty { color: var(--muted); padding: 8px 0; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>JobRadar</h1>
+    <span class="muted small" id="updated">loading…</span>
+    <div class="pills" id="pills"></div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Pipeline</h2>
+      <div class="funnel" id="funnel"></div>
+    </div>
+    <div class="card">
+      <h2>Score distribution</h2>
+      <div class="funnel" id="scores"></div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>Applications</h2>
+    <div class="tablewrap"><table id="apps"></table></div>
+  </div>
+
+  <div class="card section">
+    <h2>Shortlist (scored jobs)</h2>
+    <div class="tablewrap"><table id="shortlist"></table></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Daily runs</h2>
+      <div class="tablewrap"><table id="runs"></table></div>
+    </div>
+    <div class="card">
+      <h2>Sources</h2>
+      <div class="tablewrap"><table id="sources"></table></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => (n ?? 0).toLocaleString();
+const when = iso => iso ? new Date(iso).toLocaleString([], {dateStyle: "medium", timeStyle: "short"}) : "—";
+const link = (url, text) => url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
+
+function rows(el, head, body, empty) {
+  el.innerHTML = body.length
+    ? `<thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body.join("")}</tbody>`
+    : `<tbody><tr><td class="empty">${empty}</td></tr></tbody>`;
+}
+
+function bars(el, items) {
+  const max = Math.max(1, ...items.map(i => i[1]));
+  el.innerHTML = items.map(([label, n]) =>
+    `<div class="frow"><span class="small">${esc(label)}</span>
+     <div class="bar"><i style="width:${(n / max * 100).toFixed(1)}%"></i></div>
+     <span class="num small">${fmt(n)}</span></div>`).join("");
+}
+
+function render(d) {
+  const s = d.status, oc = d.outbox_counts, c = d.config;
+  const scored = s.scored || 0;
+  const shortlisted = d.shortlist.filter(r => r.llm_score >= c.min_score).length;
+
+  document.getElementById("updated").textContent = `updated ${new Date().toLocaleTimeString()} · last fetch ${when(d.last_fetch)}`;
+  document.getElementById("pills").innerHTML = [
+    c.dry_run ? `<span class="pill warn">auto-send off until ${esc(c.dry_run_until)}</span>`
+              : `<span class="pill good">auto-send on</span>`,
+    `<span class="pill">sent today ${d.sent_today} / ${c.daily_cap}</span>`,
+    `<span class="pill">apply threshold ≥ ${c.min_score}</span>`,
+  ].join("");
+
+  document.getElementById("kpis").innerHTML = [
+    ["Jobs tracked", d.total], ["Passed filters", scored + (s.candidate || 0)],
+    ["LLM-scored", scored], [`Score ≥ ${c.min_score}`, shortlisted],
+    ["Applications sent", oc.sent || 0], ["Skipped", oc.skipped || 0],
+  ].map(([l, v]) => `<div class="card kpi"><div class="v">${fmt(v)}</div><div class="l">${l}</div></div>`).join("");
+
+  bars(document.getElementById("funnel"), [
+    ["Fetched", d.total], ["Passed filters", scored + (s.candidate || 0)],
+    ["Scored", scored], ["Drafted", Object.values(oc).reduce((a, b) => a + b, 0)],
+    ["Applied", oc.sent || 0],
+  ]);
+  bars(document.getElementById("scores"), d.scores.map(r => [`${r.bucket}–${r.bucket + 1}`, r.n]).reverse());
+
+  rows(document.getElementById("apps"),
+    ["#", "Company / role", "Score", "Via", "Status", "When", "Note"],
+    d.outbox.map(r => `<tr>
+      <td class="muted">${r.id}</td>
+      <td>${link(r.url, r.company)}<div class="muted small">${esc(r.title)}</div></td>
+      <td class="score">${(r.llm_score ?? 0).toFixed(1)}</td>
+      <td><span class="tag">${esc(r.channel === "manual" ? "apply form" : r.channel)}</span></td>
+      <td><span class="tag ${esc(r.status)}">${esc(r.status)}</span></td>
+      <td class="small">${when(r.sent_at || r.created_at)}</td>
+      <td class="small muted">${esc(r.ref)}</td></tr>`),
+    "No applications drafted yet.");
+
+  rows(document.getElementById("shortlist"),
+    ["Score", "Company / role", "Location", "Fit", "Applied?", "Pitch"],
+    d.shortlist.map(r => `<tr>
+      <td class="score">${r.llm_score.toFixed(1)}</td>
+      <td>${link(r.url, r.company)}<div class="muted small">${esc(r.title)}</div></td>
+      <td class="small">${esc(r.location || "—")}</td>
+      <td><span class="tag">${esc(r.fit || "—")}</span></td>
+      <td>${r.outreach ? `<span class="tag ${esc(r.outreach)}">${esc(r.outreach)}</span>` : `<span class="muted small">${r.llm_score >= c.min_score ? "queued" : "below threshold"}</span>`}</td>
+      <td class="small muted">${esc(r.pitch)}</td></tr>`),
+    "Nothing scored yet.");
+
+  rows(document.getElementById("runs"),
+    ["Date", "Fetched", "New", "Scored", "Drafted", "Sender"],
+    d.runs.map(r => `<tr>
+      <td class="small">${esc(r.date)} <span class="muted">${esc(r.started || "")}</span></td>
+      <td class="num">${fmt(+r.fetched)}</td><td class="num">${fmt(+r.new)}</td>
+      <td class="num">${fmt(+r.scored)}</td>
+      <td class="small muted">${esc(r.drafted || "—")}</td>
+      <td class="small muted">${esc(r.send || "—")}</td></tr>`),
+    "No daily runs logged yet.");
+
+  rows(document.getElementById("sources"),
+    ["Source", "Jobs", "Scored"],
+    d.sources.map(r => `<tr><td>${esc(r.source)}</td><td class="num">${fmt(r.total)}</td><td class="num">${fmt(r.scored)}</td></tr>`),
+    "No sources yet.");
+}
+
+async function load() {
+  try {
+    const r = await fetch("/api/snapshot", {cache: "no-store"});
+    render(await r.json());
+  } catch (e) {
+    document.getElementById("updated").textContent = "dashboard server not reachable";
+  }
+}
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>

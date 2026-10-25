@@ -16,10 +16,19 @@ UA = {"User-Agent": "jobradar-verify/0.1 (personal job search; contact via repo 
 
 # name -> (url, kind). kind: json | text
 SOURCES: dict[str, tuple[str, str]] = {
-    "greenhouse": ("https://boards-api.greenhouse.io/v1/boards/anthropic/jobs?content=true", "json"),
+    "greenhouse": (
+        "https://boards-api.greenhouse.io/v1/boards/anthropic/jobs?content=true",
+        "json",
+    ),
     "lever": ("https://api.lever.co/v0/postings/palantir?mode=json", "json"),
-    "ashby": ("https://api.ashbyhq.com/posting-api/job-board/openai?includeCompensation=true", "json"),
-    "smartrecruiters": ("https://api.smartrecruiters.com/v1/companies/BoschGroup/postings?limit=5", "json"),
+    "ashby": (
+        "https://api.ashbyhq.com/posting-api/job-board/openai?includeCompensation=true",
+        "json",
+    ),
+    "smartrecruiters": (
+        "https://api.smartrecruiters.com/v1/companies/BoschGroup/postings?limit=5",
+        "json",
+    ),
     "workable": ("https://apply.workable.com/api/v1/widget/accounts/huggingface", "json"),
     "hn_whoishiring": (
         "https://hn.algolia.com/api/v1/search_by_date?tags=story,author_whoishiring&hitsPerPage=3",

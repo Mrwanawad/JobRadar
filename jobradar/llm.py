@@ -44,7 +44,7 @@ PRESETS: dict[str, dict[str, Any]] = {
         "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
         "rpm": 20,
         "tpm": 0,
-        "extra": {"reasoning": {"effort": "medium", "exclude": True}},
+        "extra": {"reasoning": {"effort": "low", "exclude": True}},
     },
     "mistral": {
         "base_url": "https://api.mistral.ai/v1",
@@ -146,21 +146,34 @@ def providers_from_env() -> list[Provider]:
 
 
 def parse_json(text: str) -> Any:
-    """Pull a JSON object/array out of a reply that may have fences or chatter around it."""
+    """Pull JSON out of a reply that may have fences, chatter or visible reasoning around it.
+    Prefers the last fenced block, then the last (outermost) JSON value that parses."""
     s = text.strip()
-    fence = re.search(r"```(?:json)?\s*(.*?)```", s, re.DOTALL)
-    if fence:
-        s = fence.group(1).strip()
     try:
         return json.loads(s)
     except json.JSONDecodeError:
         pass
-    starts = [i for i in (s.find("{"), s.find("[")) if i != -1]
-    if not starts:
+    fences = re.findall(r"```(?:json)?\s*(.*?)```", s, re.DOTALL)
+    for block in reversed(fences):
+        try:
+            return json.loads(block.strip())
+        except json.JSONDecodeError:
+            continue
+    dec = json.JSONDecoder()
+    found: Any = None
+    end_of_found = -1
+    for i, ch in enumerate(s):
+        if ch not in "{[" or i < end_of_found:
+            continue
+        try:
+            val, end = dec.raw_decode(s, i)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(val, (dict, list)) and val:
+            found, end_of_found = val, end
+    if found is None:
         raise ValueError("no JSON in reply")
-    start = min(starts)
-    end = max(s.rfind("}"), s.rfind("]"))
-    return json.loads(s[start : end + 1])
+    return found
 
 
 class LLMClient:

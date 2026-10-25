@@ -1,0 +1,117 @@
+# Example profile. Copy to profile.yaml (gitignored) and fill in your own details.
+# Who is searching and what counts as a match. Edit freely; regexes are case-insensitive.
+
+candidate:
+  name: Jane Doe
+  email: jane.doe@example.com
+  phone: "+201000000000"
+  base: Alexandria, Egypt
+  cv: cv/cv.pdf
+  # REQUIRED before emails can send: a public link to the CV (Drive "anyone with the link").
+  cv_link: ""   # e.g. a Google Drive "anyone with the link" URL
+  links:
+    linkedin: "https://www.linkedin.com/in/your-handle"
+    github: "https://github.com/your-handle"
+    portfolio: ""
+
+# Standing answers for salary fields on application forms (filled by Claude in Chrome).
+# Not read by the Python pipeline. All figures are net per month.
+salary:
+  egypt:                # Egypt-based roles
+    current: 0 EGP
+    expected: 0 EGP
+  international:        # Europe, US, anywhere outside the Middle East
+    current: 0 USD
+    expected: 0 USD
+
+roles:
+  # Title must match at least one of these.
+  include:
+    - '\b(ai|a\.i\.|ml|machine learning|llm|genai|gen ai|generative ai|applied ai|deep learning|nlp)\b.*\b(engineer|developer|specialist|scientist|architect|lead)\b'
+    - '\b(engineer|developer|scientist|architect)\b.*\b(ai|ml|machine learning|llm|genai|generative ai|nlp|agents?)\b'
+    - '\bcomputer vision\b'
+    - '\b(voice|speech|conversational)\b.*\b(ai|engineer|agent)'
+    - '\bagent(ic)?\b.*\bengineer\b'
+    - '\bai (agents?|automation)\b'
+    - '\bdata scientist\b'
+    - '\b(mlops|ml ops|ml platform)\b'
+    - '\b(ai|ml|technical) (trainer|instructor|educator)\b'
+    - '\b(developer advocate|devrel)\b.*\b(ai|ml|llm)\b'
+    - '\bforward deployed\b.*\bengineer\b'
+  # Matches here only if the title also matches `conditional_requires` (package judged by LLM).
+  conditional:
+    - '\bdata analy(st|tics)\b'
+  conditional_requires: '\b(senior|sr\.?|lead|staff|principal)\b'
+  exclude:
+    - '\b(intern|internship|junior|jr\.?|graduate|new grad|student|apprentice)\b'
+    - '\b(sales|account executive|recruiter|marketing|legal|counsel|finance|accountant)\b'
+    - '\b(director|vp|vice president|head of)\b'
+    - '\b(designer|design|support|gtm|go-to-market|value engineer|product manager|solutions? consultant)\b'
+
+seniority:
+  # Levels to apply for. Mid-level counts as much as senior.
+  # Used by region/keyword cycles (Claude in Chrome) as search terms; titles with no level are fine too.
+  target: [senior, mid-level]
+  search_keywords:
+    - 'mid-level'
+    - 'mid level'
+    - 'mid-senior'
+    - 'intermediate'
+    - 'senior'
+    - 'sr.'
+  # Skip only when the posting's hard requirements are far above the CV (e.g. 8+ years, PhD-only).
+  max_required_years: 6
+
+locations:
+  # Remote roles: plain "Remote" or one of these regions is kept; remote tied to any other
+  # country/city ("Remote - US", "Remote, London") is dropped.
+  remote_allowed: 'worldwide|anywhere|global|emea|mena|middle east|africa|egypt|gcc|gulf|international'
+  # On-site / hybrid places that are always fine.
+  onsite_allowed: 'egypt|cairo|alexandria|giza|saudi|riyadh|jeddah|dammam|khobar|neom|uae|united arab emirates|dubai|abu dhabi|sharjah|qatar|doha|kuwait|bahrain|manama|oman|muscat'
+  # Anywhere else on-site (EU/US/...) is kept only if the posting mentions sponsorship.
+  sponsor_hint: 'visa|sponsor|relocat|work permit|immigration'
+
+skills:
+  # Used to rank which filtered jobs get LLM-scored first.
+  - llm
+  - rag
+  - agent
+  - langchain
+  - langgraph
+  - voice
+  - speech
+  - tts
+  - asr
+  - computer vision
+  - nlp
+  - pytorch
+  - transformers
+  - fine-tun
+  - genai
+  - generative
+  - openai
+  - hugging face
+  - mlops
+  - aws
+  - fastapi
+  - python
+  - hipaa
+  - healthcare
+
+scoring:
+  max_age_days: 30
+  max_llm_per_run: 60
+  shortlist_min: 7
+
+outreach:
+  # Scored jobs at or above this get a drafted application.
+  min_score: 7.5
+  # Max emails + WhatsApp messages sent per day.
+  daily_cap: 10
+  # Drafts only until this date (inclusive). Review them with `jobradar outbox`.
+  dry_run_until: 2099-12-31
+  tone: "warm, direct, confident, no clichés; 120-180 words"
+  signature: |
+    Jane Doe
+    Alexandria, Egypt | +201000000000 | jane.doe@example.com
+  max_drafts_per_run: 15

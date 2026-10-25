@@ -1,0 +1,67 @@
+# Company job boards to watch. Every slug below returned 200 with open jobs on 2026-10-15.
+# Find a slug: open the careers page; the board URL contains it
+#   boards.greenhouse.io/<slug>, jobs.lever.co/<slug>, jobs.ashbyhq.com/<slug>,
+#   apply.workable.com/<slug>, jobs.smartrecruiters.com/<slug>
+
+greenhouse:
+  anthropic: Anthropic
+  scaleai: Scale AI
+  databricks: Databricks
+  stabilityai: Stability AI
+  togetherai: Together AI
+  assemblyai: AssemblyAI
+  gleanwork: Glean
+  careem: Careem
+  snorkelai: Snorkel AI
+  dataiku: Dataiku
+  tamara: Tamara
+  celonis: Celonis
+  helsing: Helsing
+  n26: N26
+  wise: Wise
+  getyourguide: GetYourGuide
+
+lever:
+  palantir: Palantir
+  spotify: Spotify
+  zoox: Zoox
+
+ashby:
+  thndr: Thndr  # Cairo
+  openai: OpenAI
+  cohere: Cohere
+  elevenlabs: ElevenLabs
+  perplexity: Perplexity
+  langchain: LangChain
+  deepgram: Deepgram
+  synthesia: Synthesia
+  vapi: Vapi
+  cartesia: Cartesia
+  replit: Replit
+  cursor: Cursor
+  modal: Modal
+  pika: Pika
+  baseten: Baseten
+  llamaindex: LlamaIndex
+  mercor: Mercor
+  harvey: Harvey
+  sierra: Sierra
+  decagon: Decagon
+  writer: Writer
+  character: Character.AI
+  livekit: LiveKit
+  n8n: n8n
+  supabase: Supabase
+  posthog: PostHog
+  ramp: Ramp
+  linear: Linear
+
+workable:
+  robusta: Robusta  # Cairo/Alexandria
+  foodics: Foodics  # Cairo office
+  tamatem: Tamatem
+  huggingface: Hugging Face
+
+smartrecruiters:
+  brimore: Brimore  # Cairo
+  # BoschGroup: Bosch   # 5000+ postings; enable only with a narrower filter

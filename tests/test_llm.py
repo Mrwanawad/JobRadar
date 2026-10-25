@@ -176,6 +176,11 @@ def test_parse_json_variants():
     assert parse_json('```json\n{"a": 1}\n```') == {"a": 1}
     assert parse_json('Here: {"a": [1, 2]} done') == {"a": [1, 2]}
     assert parse_json("[1]") == [1]
+    # visible reasoning with braces before the real answer
+    reasoning = 'I think {score} matters. {"score": 8, "r": ["a"]}'
+    assert parse_json(reasoning) == {"score": 8, "r": ["a"]}
+    two_fences = 'draft ```json\n{"a": 1}\n``` final ```json\n{"a": 2}\n```'
+    assert parse_json(two_fences) == {"a": 2}
 
 
 @pytest.fixture

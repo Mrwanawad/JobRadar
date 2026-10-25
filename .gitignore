@@ -9,3 +9,13 @@ out/
 data/jobradar.db
 *.db
 desktop.ini
+
+# Personal data and local agent state: never published
+profile.yaml
+cv/
+data/
+CHECKPOINT.md
+CLAUDE.md
+.claude/*
+!.claude/commands/
+*.local.*
