@@ -1,0 +1,111 @@
+# Local platform: infra + the three JobRadar services.
+#   docker compose -f deploy/compose/compose.yaml up -d            # everything
+#   docker compose -f deploy/compose/compose.yaml up -d postgres temporal elasticsearch otel-collector lgtm
+name: jobradar
+
+x-otel-env: &otel-env
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+  OTEL_RESOURCE_ATTRIBUTES: deployment.environment=local
+
+services:
+  postgres:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: jobradar
+      POSTGRES_PASSWORD: jobradar
+      POSTGRES_DB: jobradar
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobradar"]
+      interval: 5s
+      retries: 20
+
+  # Temporal dev server: frontend gRPC :7233, Web UI :8233, state persisted in a SQLite file.
+  # Kubernetes uses the official Helm chart with Postgres persistence instead.
+  temporal:
+    image: temporalio/temporal:1.8.3
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--db-filename", "/data/temporal.db",
+              "--namespace", "jobradar"]
+    ports: ["7233:7233", "8233:8233"]
+    volumes: [temporal:/data]
+    user: "0"
+
+  elasticsearch:
+    image: elasticsearch:9.4.6
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    ports: ["9200:9200"]
+    volumes: [esdata:/usr/share/elasticsearch/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      retries: 30
+
+  # Every service sends OTLP here; the collector fans out to Grafana LGTM (traces, metrics,
+  # logs) and, when LANGFUSE_* is set, LLM spans to Langfuse.
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.163.2
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes: [./otel-collector.yaml:/etc/otelcol/config.yaml:ro]
+    environment:
+      LANGFUSE_OTLP_ENDPOINT: ${LANGFUSE_OTLP_ENDPOINT:-https://cloud.langfuse.com/api/public/otel}
+      LANGFUSE_AUTH: ${LANGFUSE_AUTH:-}
+    ports: ["4317:4317", "4318:4318"]
+    depends_on: [lgtm]
+
+  # Grafana + Tempo + Loki + Prometheus in one container. UI: http://localhost:3000
+  lgtm:
+    image: grafana/otel-lgtm:0.36.0
+    ports: ["3000:3000"]
+
+  orchestrator-worker:
+    build: {context: ../.., dockerfile: orchestrator/Dockerfile}
+    command: ["worker"]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: orchestrator-worker
+      DATABASE_URL: postgres://jobradar:jobradar@postgres:5432/jobradar?sslmode=disable
+      TEMPORAL_ADDRESS: temporal:7233
+    depends_on:
+      postgres: {condition: service_healthy}
+      temporal: {condition: service_started}
+    restart: unless-stopped
+
+  gateway:
+    build: {context: ../.., dockerfile: orchestrator/Dockerfile}
+    command: ["gateway"]
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: gateway
+      DATABASE_URL: postgres://jobradar:jobradar@postgres:5432/jobradar?sslmode=disable
+      TEMPORAL_ADDRESS: temporal:7233
+      GATEWAY_ADDR: :8080
+      GATEWAY_TOKEN: ${GATEWAY_TOKEN:-dev-token}
+    ports: ["8080:8080"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      temporal: {condition: service_started}
+    restart: unless-stopped
+
+  agent-worker:
+    build: {context: ../.., dockerfile: deploy/docker/agent.Dockerfile}
+    environment:
+      <<: *otel-env
+      OTEL_SERVICE_NAME: agent-worker
+      DATABASE_URL: postgresql://jobradar:jobradar@postgres:5432/jobradar
+      TEMPORAL_ADDRESS: temporal:7233
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    env_file: [{path: ../../.env, required: false}]
+    depends_on:
+      postgres: {condition: service_healthy}
+      elasticsearch: {condition: service_healthy}
+      temporal: {condition: service_started}
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  temporal:
+  esdata:

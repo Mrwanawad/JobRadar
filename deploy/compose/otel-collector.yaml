@@ -1,0 +1,42 @@
+receivers:
+  otlp:
+    protocols:
+      grpc: {endpoint: 0.0.0.0:4317}
+      http: {endpoint: 0.0.0.0:4318}
+
+processors:
+  batch: {}
+  # Only LLM spans (GenAI semantic conventions or LangGraph/LangChain) go to Langfuse.
+  filter/llm_only:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes["gen_ai.system"] == nil and attributes["langfuse.observation.type"] == nil'
+
+exporters:
+  otlp/lgtm:
+    endpoint: lgtm:4317
+    tls: {insecure: true}
+  otlphttp/langfuse:
+    endpoint: ${env:LANGFUSE_OTLP_ENDPOINT}
+    headers:
+      Authorization: Basic ${env:LANGFUSE_AUTH}
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/lgtm]
+    traces/langfuse:
+      receivers: [otlp]
+      processors: [filter/llm_only, batch]
+      exporters: [otlphttp/langfuse]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/lgtm]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/lgtm]

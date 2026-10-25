@@ -1,0 +1,170 @@
+// Contracts shared by the Go orchestrator, the Python agent worker and the gateway.
+// Temporal carries these as json/protobuf payloads, so a Go workflow can call a Python
+// activity (and back) with one schema. Big data (job descriptions, CVs) never rides in a
+// payload: activities read and write Postgres and pass ids (claim-check pattern).
+syntax = "proto3";
+
+package jobradar.v1;
+
+import "google/protobuf/timestamp.proto";
+
+enum RunMode {
+  RUN_MODE_UNSPECIFIED = 0;
+  // The owner's own profile: drafts wait for human approval, then the sender delivers them.
+  RUN_MODE_PERSONAL = 1;
+  // Public demo run for a visitor: find, rank and draft only. Nothing is ever sent.
+  RUN_MODE_DEMO = 2;
+}
+
+// One place jobs come from: an ATS board (kind = greenhouse, lever, ashby, smartrecruiters,
+// workable; slug = the board id) or an aggregator feed (kind = feed; slug = remoteok, wwr,
+// himalayas, hn).
+message Source {
+  string kind = 1;
+  string slug = 2;
+  string name = 3;
+}
+
+message Limits {
+  int32 fetch_concurrency = 1;
+  int32 match_top_k = 2;
+  int32 max_scored = 3;
+  int32 max_drafts = 4;
+  float min_draft_score = 5;
+}
+
+message RadarRequest {
+  string profile_id = 1;
+  RunMode mode = 2;
+  repeated Source sources = 3;
+  Limits limits = 4;
+}
+
+enum Stage {
+  STAGE_UNSPECIFIED = 0;
+  STAGE_FETCHING = 1;
+  STAGE_PREFILTERING = 2;
+  STAGE_INDEXING = 3;
+  STAGE_MATCHING = 4;
+  STAGE_SCORING = 5;
+  STAGE_DRAFTING = 6;
+  STAGE_AWAITING_APPROVAL = 7;
+  STAGE_DONE = 8;
+}
+
+// Live state of a run, served by the workflow's `progress` query and streamed to the UI.
+message RadarProgress {
+  Stage stage = 1;
+  int32 sources_total = 2;
+  int32 sources_done = 3;
+  int32 fetched = 4;
+  int32 inserted = 5;
+  int32 candidates = 6;
+  int32 indexed = 7;
+  int32 matched = 8;
+  int32 scored = 9;
+  int32 drafted = 10;
+  repeated string errors = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message ScoredJob {
+  string job_uid = 1;
+  string company = 2;
+  string title = 3;
+  string location = 4;
+  string url = 5;
+  float score = 6;
+  string pitch_angle = 7;
+  int64 outbox_id = 8;
+}
+
+message RadarResult {
+  RadarProgress progress = 1;
+  repeated ScoredJob top = 2;
+}
+
+// ---- Activities (task queue in brackets) ----
+
+// [ingest, Go] Fetch one source and upsert its jobs into Postgres.
+message FetchSourceInput {
+  Source source = 1;
+}
+
+message FetchSourceResult {
+  string source = 1;
+  int32 fetched = 2;
+  int32 inserted = 3;
+}
+
+// [agent, Python] Free rules pass (title, location, age, duplicates) for one profile.
+message PrefilterInput {
+  string profile_id = 1;
+}
+
+message PrefilterResult {
+  int32 candidates = 1;
+  int32 filtered = 2;
+  int32 duplicates = 3;
+}
+
+// [agent, Python] Embed jobs not yet in Elasticsearch and index them.
+message IndexJobsInput {
+  int32 batch_size = 1;
+}
+
+message IndexJobsResult {
+  int32 indexed = 1;
+}
+
+// [agent, Python] Hybrid BM25 + kNN search of the profile's candidates against its CV.
+message MatchJobsInput {
+  string profile_id = 1;
+  int32 top_k = 2;
+}
+
+message MatchJobsResult {
+  repeated string job_uids = 1;
+}
+
+// [agent, Python] LangGraph screening agent: CV + job -> 0-10 fit with reasons.
+message ScoreJobInput {
+  string profile_id = 1;
+  string job_uid = 2;
+}
+
+message ScoreJobResult {
+  string job_uid = 1;
+  float score = 2;
+  string scored_by = 3;
+}
+
+// [agent, Python] LangGraph writer agent: draft -> critique -> revise, stored in the outbox.
+message DraftApplicationInput {
+  string profile_id = 1;
+  string job_uid = 2;
+}
+
+message DraftApplicationResult {
+  int64 outbox_id = 1;
+  string channel = 2;
+  float critique_score = 3;
+  int32 revisions = 4;
+}
+
+// [agent, Python] Top results for the run summary.
+message TopJobsInput {
+  string profile_id = 1;
+  int32 limit = 2;
+}
+
+message TopJobsResult {
+  repeated ScoredJob jobs = 1;
+}
+
+// Signal `approval` on a personal run: approve or reject one draft, optionally edited.
+message ApprovalSignal {
+  int64 outbox_id = 1;
+  bool approve = 2;
+  string edited_body = 3;
+}
