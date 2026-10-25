@@ -9,6 +9,8 @@ the run and the next one takes over.
 
 from __future__ import annotations
 
+import contextlib
+import contextvars
 import json
 import logging
 import os
@@ -21,6 +23,19 @@ from typing import Any
 
 import httpx
 from dotenv import load_dotenv
+
+try:  # platform extra; lite mode runs without OpenTelemetry
+    from opentelemetry import trace
+
+    _tracer: Any = trace.get_tracer("jobradar.llm")
+except ImportError:  # pragma: no cover
+    _tracer = None
+
+# Prompts and replies carry CV text, so span content is opt-in (OTEL_CAPTURE_LLM_CONTENT=true),
+# and the agent worker switches it off for demo visitors whatever the setting.
+CAPTURE_CONTENT: contextvars.ContextVar[bool] = contextvars.ContextVar(
+    "capture_llm_content", default=os.getenv("OTEL_CAPTURE_LLM_CONTENT", "").lower() == "true"
+)
 
 # name -> defaults. Limits are free-tier values checked 2026-10-15; override via env.
 PRESETS: dict[str, dict[str, Any]] = {
@@ -259,7 +274,38 @@ class LLMClient:
         temperature: float | None = None,
     ) -> LLMResult:
         """Try providers in order. Auth failure or rate limit on one moves to the next;
-        only the last available provider waits out a short rate limit."""
+        only the last available provider waits out a short rate limit.
+
+        Traced as one OpenTelemetry GenAI span (Langfuse shows it as a generation)."""
+        if _tracer is None:
+            return self._chat(messages, max_tokens=max_tokens, temperature=temperature)
+        with _tracer.start_as_current_span("chat") as span:
+            span.set_attribute("gen_ai.operation.name", "chat")
+            span.set_attribute("langfuse.observation.type", "generation")
+            span.set_attribute("gen_ai.request.max_tokens", max_tokens)
+            if CAPTURE_CONTENT.get():
+                span.set_attribute("langfuse.observation.input", json.dumps(messages))
+            res = self._chat(messages, max_tokens=max_tokens, temperature=temperature)
+            span.update_name(f"chat {res.model}")
+            span.set_attribute("gen_ai.system", res.provider.split("#")[0])
+            span.set_attribute("gen_ai.request.model", res.model)
+            span.set_attribute("gen_ai.response.model", res.model)
+            with contextlib.suppress(KeyError, TypeError, ValueError):
+                span.set_attribute("gen_ai.usage.input_tokens", int(res.usage["prompt_tokens"]))
+                span.set_attribute(
+                    "gen_ai.usage.output_tokens", int(res.usage["completion_tokens"])
+                )
+            if CAPTURE_CONTENT.get():
+                span.set_attribute("langfuse.observation.output", res.text)
+            return res
+
+    def _chat(
+        self,
+        messages: list[dict[str, str]],
+        *,
+        max_tokens: int,
+        temperature: float | None,
+    ) -> LLMResult:
         prompt_text = "".join(m["content"] for m in messages)
         est = estimate_tokens(prompt_text) + max_tokens
         errors: list[str] = []

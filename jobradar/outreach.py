@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import re
-import sqlite3
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from typing import Any
@@ -80,10 +80,17 @@ def pick_email(emails: list[str]) -> str:
     return (good or ok or [""])[0]
 
 
-def channel_for(row: sqlite3.Row) -> tuple[str, str]:
+def _as_list(v: Any) -> list[str]:
+    """SQLite stores lists as JSON text; Postgres returns real arrays."""
+    if isinstance(v, list):
+        return v
+    return json.loads(v or "[]")
+
+
+def channel_for(row: Mapping[str, Any]) -> tuple[str, str]:
     """(channel, recipient). Email if the posting lists a usable address; WhatsApp only when a
     phone number is the sole contact; otherwise apply by hand through the posting's form."""
-    emails, phones = json.loads(row["emails"] or "[]"), json.loads(row["phones"] or "[]")
+    emails, phones = _as_list(row["emails"]), _as_list(row["phones"])
     if email := pick_email(emails):
         return "email", email
     if phones and not emails:
@@ -91,10 +98,12 @@ def channel_for(row: sqlite3.Row) -> tuple[str, str]:
     return "manual", row["apply_url"] or row["url"]
 
 
-def draft_one(
-    llm: LLMClient, profile: Profile, cv: str, row: sqlite3.Row, channel: str
-) -> tuple[str, str]:
-    res: dict[str, Any] = json.loads(row["llm_json"] or "{}")
+def draft_messages(
+    profile: Profile, cv: str, row: Mapping[str, Any], channel: str
+) -> list[dict[str, str]]:
+    """Messages for one drafting call. `row` is a job joined with its screening result."""
+    res = row["llm_json"]
+    res = res if isinstance(res, dict) else json.loads(res or "{}")
     kind, extra, subject_note = KINDS[channel]
     c, o = profile.candidate, profile.outreach
     links = ", ".join(f"{k}: {v}" for k, v in c.links.items() if v) or "none"
@@ -114,10 +123,14 @@ def draft_one(
         extra=extra,
         subject_note=subject_note,
     )
-    data, _ = llm.chat_json(
-        [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}],
-        max_tokens=4000,
-    )
+    return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}]
+
+
+def finish_draft(
+    profile: Profile, row: Mapping[str, Any], channel: str, data: Any
+) -> tuple[str, str]:
+    """(subject, body) from the model's JSON: CV link and signature appended."""
+    c, o = profile.candidate, profile.outreach
     if not isinstance(data, dict) or not str(data.get("body", "")).strip():
         raise ValueError("draft missing body")
     body = str(data["body"]).strip()
@@ -128,6 +141,13 @@ def draft_one(
         body = body.rstrip() + "\n\n" + o.signature.strip()
     subject = str(data.get("subject", "")).strip() or f"{row['title']} - {c.name}"
     return (subject if channel == "email" else ""), body
+
+
+def draft_one(
+    llm: LLMClient, profile: Profile, cv: str, row: Mapping[str, Any], channel: str
+) -> tuple[str, str]:
+    data, _ = llm.chat_json(draft_messages(profile, cv, row, channel), max_tokens=4000)
+    return finish_draft(profile, row, channel, data)
 
 
 @dataclass

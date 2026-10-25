@@ -6,12 +6,13 @@ receivers:
 
 processors:
   batch: {}
-  # Only LLM spans (GenAI semantic conventions or LangGraph/LangChain) go to Langfuse.
-  filter/llm_only:
+  # Langfuse gets the agent worker's traces only: LangGraph nodes and LLM generations, with
+  # their Temporal activity parents. Ingestion and gateway spans stay in Tempo.
+  filter/agent_only:
     error_mode: ignore
     traces:
       span:
-        - 'attributes["gen_ai.system"] == nil and attributes["langfuse.observation.type"] == nil'
+        - 'resource.attributes["service.name"] != "agent-worker"'
 
 exporters:
   otlp/lgtm:
@@ -30,7 +31,7 @@ service:
       exporters: [otlp/lgtm]
     traces/langfuse:
       receivers: [otlp]
-      processors: [filter/llm_only, batch]
+      processors: [filter/agent_only, batch]
       exporters: [otlphttp/langfuse]
     metrics:
       receivers: [otlp]

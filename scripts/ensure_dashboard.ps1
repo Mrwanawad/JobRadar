@@ -10,7 +10,7 @@ try {
 } catch { $up = $false } finally { $client.Close() }
 
 if (-not $up) {
-    Start-Process -FilePath "uv" -ArgumentList "run", "jobradar", "dashboard", "--port", "$Port", "--no-open" `
+    Start-Process -FilePath "uv" -ArgumentList "run", "--no-sync", "python", "-m", "jobradar", "dashboard", "--port", "$Port", "--no-open" `
         -WorkingDirectory $root -WindowStyle Hidden
     Write-Output "JobRadar dashboard started: http://127.0.0.1:$Port/"
 }

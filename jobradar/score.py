@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import sqlite3
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
 from pypdf import PdfReader
 
-from jobradar.config import ROOT, Profile
+from jobradar.config import DEFAULT_CONSTRAINTS, ROOT, Profile
 from jobradar.llm import LLMClient
 
 MAX_DESC_CHARS = 6000
@@ -20,12 +20,7 @@ TEMPLATE = """CANDIDATE CV
 {cv}
 
 CANDIDATE CONSTRAINTS
-- Based in {base}. Holds Egyptian citizenship; no work authorisation elsewhere unless
-  the CV says so.
-- Acceptable: remote roles open to Egypt/EMEA/worldwide; on-site or relocation in Egypt or
-  the Gulf (KSA, UAE, Qatar, Kuwait, Bahrain, Oman); EU/US on-site only with visa sponsorship.
-- Target: mid-to-senior AI/LLM/ML engineering, voice/agents, computer vision, data science,
-  AI training/education. Senior-to-principal data analyst only if the package looks strong.
+{constraints}
 
 JOB
 Company: {company}
@@ -73,22 +68,32 @@ def clamp(score: Any, result: dict[str, Any]) -> float:
     return s
 
 
-def score_job(
-    llm: LLMClient, profile: Profile, cv: str, row: sqlite3.Row
-) -> tuple[float, dict[str, Any], str]:
+def constraints_text(profile: Profile) -> str:
+    c = profile.candidate
+    return (c.constraints or DEFAULT_CONSTRAINTS).format(base=c.base or "unknown")
+
+
+def build_prompt(profile: Profile, cv: str, job: Mapping[str, Any]) -> list[dict[str, str]]:
+    """Messages for one screening call. `job` is a SQLite row or a Postgres dict row."""
     prompt = TEMPLATE.format(
         cv=cv,
-        base=profile.candidate.base,
-        company=row["company"],
-        title=row["title"],
-        location=row["location"] or "unknown",
-        remote={1: "yes", 0: "no"}.get(row["remote"], "unknown"),
-        salary=row["salary"] or "not stated",
-        posted_at=row["posted_at"] or "unknown",
-        description=(row["description"] or "(no description available)")[:MAX_DESC_CHARS],
+        constraints=constraints_text(profile),
+        company=job["company"],
+        title=job["title"],
+        location=job["location"] or "unknown",
+        remote={1: "yes", 0: "no"}.get(job["remote"], "unknown"),
+        salary=job["salary"] or "not stated",
+        posted_at=job["posted_at"] or "unknown",
+        description=(job["description"] or "(no description available)")[:MAX_DESC_CHARS],
     )
+    return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}]
+
+
+def score_job(
+    llm: LLMClient, profile: Profile, cv: str, row: Mapping[str, Any]
+) -> tuple[float, dict[str, Any], str]:
     data, res = llm.chat_json(
-        [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}],
+        build_prompt(profile, cv, row),
         max_tokens=4000,  # some free models reason in the visible reply
     )
     if not isinstance(data, dict):

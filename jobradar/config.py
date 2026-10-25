@@ -22,6 +22,17 @@ class Candidate(BaseModel):
     # since the Gmail connector needs attachments inlined as base64.
     cv_link: str = ""
     links: dict[str, str] = Field(default_factory=dict)  # linkedin, github, portfolio, ...
+    # Eligibility and target, as told to the screening LLM. Empty = DEFAULT_CONSTRAINTS.
+    constraints: str = ""
+
+
+DEFAULT_CONSTRAINTS = """\
+- Based in {base}. Holds Egyptian citizenship; no work authorisation elsewhere unless
+  the CV says so.
+- Acceptable: remote roles open to Egypt/EMEA/worldwide; on-site or relocation in Egypt or
+  the Gulf (KSA, UAE, Qatar, Kuwait, Bahrain, Oman); EU/US on-site only with visa sponsorship.
+- Target: mid-to-senior AI/LLM/ML engineering, voice/agents, computer vision, data science,
+  AI training/education. Senior-to-principal data analyst only if the package looks strong."""
 
 
 class Roles(BaseModel):

@@ -224,5 +224,41 @@ def _write_xlsx(db: DB, rows: list, path: Path) -> None:
     wb.save(path)
 
 
+# ---- platform mode (needs the `platform` extra and the docker compose stack) ----------------
+
+
+@app.command()
+def worker() -> None:
+    """Run the Temporal agent worker (task queue jobradar-agent)."""
+    from jobradar.agent.worker import main as run_worker
+
+    run_worker()
+
+
+@app.command("publish-profile")
+def publish_profile(
+    profile_id: str = typer.Option("owner", help="Id the daily schedule runs for"),
+    dsn: str = typer.Option(
+        "postgresql://jobradar:jobradar@localhost:5432/jobradar", envvar="DATABASE_URL"
+    ),
+) -> None:
+    """Copy profile.yaml + CV text into Postgres as the personal platform profile."""
+    from psycopg import connect
+    from psycopg.types.json import Jsonb
+
+    from jobradar.score import cv_text
+
+    prof = load_profile()
+    with connect(dsn) as c:
+        c.execute(
+            """INSERT INTO profiles (id, kind, owner, profile, cv_text)
+               VALUES (%s, 'personal', %s, %s, %s)
+               ON CONFLICT (id) DO UPDATE SET profile = EXCLUDED.profile,
+                                              cv_text = EXCLUDED.cv_text""",
+            (profile_id, prof.candidate.email, Jsonb(prof.model_dump(mode="json")), cv_text(prof)),
+        )
+    typer.echo(f"profile {profile_id!r} published; schedule it: jobradar schedule {profile_id}")
+
+
 if __name__ == "__main__":
     app()
