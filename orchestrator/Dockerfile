@@ -1,6 +1,6 @@
 # Go orchestrator: one static binary (worker | gateway | migrate | schedule) on distroless.
 # Build context: repo root (needs companies.yaml).
-FROM golang:1.25-alpine AS build
+FROM golang:1.26-alpine AS build
 WORKDIR /src/orchestrator
 COPY orchestrator/go.mod orchestrator/go.sum ./
 RUN go mod download

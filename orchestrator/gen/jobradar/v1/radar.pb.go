@@ -847,10 +847,13 @@ func (x *PrefilterResult) GetDuplicates() int32 {
 	return 0
 }
 
-// [agent, Python] Embed jobs not yet in Elasticsearch and index them.
+// [agent, Python] Embed jobs not yet in Elasticsearch and index them. With profile_id,
+// only that profile's candidates: matching never searches anything else, so a run on a
+// cold index embeds tens of jobs instead of every job ever fetched.
 type IndexJobsInput struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	BatchSize     int32                  `protobuf:"varint,1,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	ProfileId     string                 `protobuf:"bytes,2,opt,name=profile_id,json=profileId,proto3" json:"profile_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -890,6 +893,13 @@ func (x *IndexJobsInput) GetBatchSize() int32 {
 		return x.BatchSize
 	}
 	return 0
+}
+
+func (x *IndexJobsInput) GetProfileId() string {
+	if x != nil {
+		return x.ProfileId
+	}
+	return ""
 }
 
 type IndexJobsResult struct {
@@ -1494,10 +1504,12 @@ const file_jobradar_v1_radar_proto_rawDesc = "" +
 	"\bfiltered\x18\x02 \x01(\x05R\bfiltered\x12\x1e\n" +
 	"\n" +
 	"duplicates\x18\x03 \x01(\x05R\n" +
-	"duplicates\"/\n" +
+	"duplicates\"N\n" +
 	"\x0eIndexJobsInput\x12\x1d\n" +
 	"\n" +
-	"batch_size\x18\x01 \x01(\x05R\tbatchSize\"+\n" +
+	"batch_size\x18\x01 \x01(\x05R\tbatchSize\x12\x1d\n" +
+	"\n" +
+	"profile_id\x18\x02 \x01(\tR\tprofileId\"+\n" +
 	"\x0fIndexJobsResult\x12\x18\n" +
 	"\aindexed\x18\x01 \x01(\x05R\aindexed\"D\n" +
 	"\x0eMatchJobsInput\x12\x1d\n" +

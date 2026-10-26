@@ -155,3 +155,24 @@ def test_rrf_rewards_agreement():
     fused = rrf([["a", "b", "c"], ["b", "a", "d"]])
     assert set(fused) == {"a", "b", "c", "d"}
     assert fused["a"] == fused["b"] > fused["c"] == fused["d"]
+
+
+def test_slow_llm_calls_keep_heartbeating(monkeypatch):
+    import time
+
+    from jobradar.agent import activities
+
+    monkeypatch.setattr(activities, "HEARTBEAT_EVERY", 0.05)
+
+    class Slow(Script):
+        def chat(self, messages, **kw):  # noqa: ANN001, ANN003
+            time.sleep(0.3)  # waiting behind the shared client / free-tier backoff
+            return super().chat(messages, **kw)
+
+    beats: list[tuple] = []
+    env = ActivityEnvironment()
+    env.on_heartbeat = lambda *d: beats.append(d)
+    a = agent(FakeStore())
+    a._llm = Slow(SCORE)  # type: ignore[assignment]
+    env.run(a.score_job, pb.ScoreJobInput(profile_id="p1", job_uid="a"))
+    assert len(beats) >= 3

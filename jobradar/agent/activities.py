@@ -8,9 +8,11 @@ free-tier throttling state (requests per minute, parked keys) is per process.
 
 from __future__ import annotations
 
+import contextlib
+import contextvars
 import re
 import threading
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Any
 
@@ -105,7 +107,7 @@ class Agent:
 
     @activity.defn(name="IndexJobs")
     def index_jobs(self, inp: pb.IndexJobsInput) -> pb.IndexJobsResult:
-        jobs = self.store.jobs_to_index(inp.batch_size or 256)
+        jobs = self.store.jobs_to_index(inp.batch_size or 256, inp.profile_id)
         activity.heartbeat(len(jobs))
         n = self.index.index(jobs)
         self.store.mark_indexed([j["uid"] for j in jobs])
@@ -131,7 +133,7 @@ class Agent:
     def score_job(self, inp: pb.ScoreJobInput) -> pb.ScoreJobResult:
         sp = self.store.profile(inp.profile_id)
         job = self.store.job(inp.job_uid)
-        with _content_policy(sp.kind):
+        with _heartbeating(), _content_policy(sp.kind):
             score, data, by = graphs.screen(self.llm, sp.profile, sp.cv_text, job)
         self.store.save_score(inp.profile_id, inp.job_uid, score, data, by)
         return pb.ScoreJobResult(job_uid=inp.job_uid, score=score, scored_by=by)
@@ -143,7 +145,7 @@ class Agent:
         channel, recipient = channel_for(job)
         if sp.kind == "demo":
             channel, recipient = "manual", job["apply_url"] or job["url"]  # never sent
-        with _content_policy(sp.kind):
+        with _heartbeating(), _content_policy(sp.kind):
             try:
                 subject, body, critique, revisions = graphs.write(
                     self.llm, sp.profile, sp.cv_text, job, channel
@@ -183,6 +185,33 @@ def _title_terms(profile: Any) -> list[str]:
     for rx in profile.roles.include:
         words += re.findall(r"[a-z][a-z .+-]{1,40}", rx.replace("\\b", " ").replace("\\", ""))
     return [w.strip() for w in words if w.strip()][:20]
+
+
+HEARTBEAT_EVERY = 20.0  # seconds; the workflow's heartbeat timeout is 2 minutes
+
+
+@contextlib.contextmanager
+def _heartbeating() -> Iterator[None]:
+    """Heartbeat from a side thread while an LLM activity waits on the shared client.
+
+    A call can sit behind the serialization lock or free-tier backoff for minutes; that
+    is progress, not a hang. If the process dies the heartbeats stop and Temporal retries
+    elsewhere. The thread runs in a copy of this activity's context so heartbeat() finds it.
+    """
+    stop = threading.Event()
+    ctx = contextvars.copy_context()
+
+    def beat() -> None:
+        while not stop.wait(HEARTBEAT_EVERY):
+            ctx.run(activity.heartbeat)
+
+    t = threading.Thread(target=beat, daemon=True)
+    t.start()
+    try:
+        yield
+    finally:
+        stop.set()
+        t.join()
 
 
 class _content_policy:  # noqa: N801

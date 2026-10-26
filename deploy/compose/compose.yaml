@@ -83,7 +83,7 @@ services:
       DATABASE_URL: postgres://jobradar:jobradar@postgres:5432/jobradar?sslmode=disable
       TEMPORAL_ADDRESS: temporal:7233
       GATEWAY_ADDR: :8080
-      GATEWAY_TOKEN: ${GATEWAY_TOKEN:-dev-token}
+      GATEWAY_TOKEN: ${GATEWAY_TOKEN:-dev-token-change-me}
     ports: ["8080:8080"]
     depends_on:
       postgres: {condition: service_healthy}

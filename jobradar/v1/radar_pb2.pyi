@@ -165,10 +165,12 @@ class PrefilterResult(_message.Message):
     def __init__(self, candidates: _Optional[int] = ..., filtered: _Optional[int] = ..., duplicates: _Optional[int] = ...) -> None: ...
 
 class IndexJobsInput(_message.Message):
-    __slots__ = ("batch_size",)
+    __slots__ = ("batch_size", "profile_id")
     BATCH_SIZE_FIELD_NUMBER: _ClassVar[int]
+    PROFILE_ID_FIELD_NUMBER: _ClassVar[int]
     batch_size: int
-    def __init__(self, batch_size: _Optional[int] = ...) -> None: ...
+    profile_id: str
+    def __init__(self, batch_size: _Optional[int] = ..., profile_id: _Optional[str] = ...) -> None: ...
 
 class IndexJobsResult(_message.Message):
     __slots__ = ("indexed",)

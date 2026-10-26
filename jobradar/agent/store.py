@@ -84,12 +84,19 @@ class AgentStore:
 
     # ---- indexing --------------------------------------------------------------------------
 
-    def jobs_to_index(self, limit: int) -> list[dict[str, Any]]:
+    def jobs_to_index(self, limit: int, profile_id: str = "") -> list[dict[str, Any]]:
+        """Unindexed jobs; with profile_id, only that profile's candidates."""
+        scope = (
+            """AND EXISTS (SELECT 1 FROM matches m WHERE m.job_uid = j.uid
+                   AND m.profile_id = %(pid)s AND m.status = 'candidate')"""
+            if profile_id
+            else ""
+        )
         with self.pool.connection() as c:
             return c.execute(
-                f"""SELECT {JOB_COLS} FROM jobs j WHERE j.indexed_at IS NULL
-                    ORDER BY j.first_seen LIMIT %s""",
-                (limit,),
+                f"""SELECT {JOB_COLS} FROM jobs j WHERE j.indexed_at IS NULL {scope}
+                    ORDER BY j.first_seen LIMIT %(limit)s""",
+                {"pid": profile_id, "limit": limit},
             ).fetchall()
 
     def mark_indexed(self, uids: list[str]) -> None:

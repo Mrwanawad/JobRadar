@@ -168,7 +168,10 @@ func (s *Server) startRun(w http.ResponseWriter, r *http.Request) {
 		ID:                    id,
 		TaskQueue:             workflows.IngestQueue,
 		WorkflowIDReusePolicy: enumspb.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE,
-		WorkflowRunTimeout:    workflows.ApprovalWindow + 6*time.Hour,
+		// Without this the SDK hands back the running execution instead of an error,
+		// and a second start of a demo run would look like success.
+		WorkflowExecutionErrorWhenAlreadyStarted: true,
+		WorkflowRunTimeout:                       workflows.ApprovalWindow + 6*time.Hour,
 	}, workflows.RadarWorkflow, in)
 	var started *serviceerror.WorkflowExecutionAlreadyStarted
 	if errors.As(err, &started) {

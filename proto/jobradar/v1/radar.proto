@@ -108,9 +108,12 @@ message PrefilterResult {
   int32 duplicates = 3;
 }
 
-// [agent, Python] Embed jobs not yet in Elasticsearch and index them.
+// [agent, Python] Embed jobs not yet in Elasticsearch and index them. With profile_id,
+// only that profile's candidates: matching never searches anything else, so a run on a
+// cold index embeds tens of jobs instead of every job ever fetched.
 message IndexJobsInput {
   int32 batch_size = 1;
+  string profile_id = 2;
 }
 
 message IndexJobsResult {

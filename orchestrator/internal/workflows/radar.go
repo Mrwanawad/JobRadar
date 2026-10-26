@@ -156,14 +156,14 @@ func runPipeline(ctx workflow.Context, req *pb.RadarRequest, lim *pb.Limits, p *
 	}
 	p.Candidates = pf.Candidates
 
-	// 3. Embed and index new jobs, in batches, until nothing is left.
+	// 3. Embed and index this profile's unindexed candidates, in batches.
 	p.Stage = pb.Stage_STAGE_INDEXING
 	touch()
 	const batch = 256
 	for range 40 {
 		var ix pb.IndexJobsResult
 		if err := workflow.ExecuteActivity(agent(15*time.Minute, 5), ActIndexJobs,
-			&pb.IndexJobsInput{BatchSize: batch}).Get(ctx, &ix); err != nil {
+			&pb.IndexJobsInput{BatchSize: batch, ProfileId: profileID}).Get(ctx, &ix); err != nil {
 			return nil, fmt.Errorf("index: %w", err)
 		}
 		p.Indexed += ix.Indexed
